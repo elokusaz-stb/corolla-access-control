@@ -1,17 +1,10 @@
 'use client';
 
-import {
-  Shield,
-  Users,
-  Settings,
-  Activity,
-  ArrowRight,
-  Loader2,
-} from 'lucide-react';
+import { Shield, Users, Settings, Activity, ArrowRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import useSWR from 'swr';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 function StatCard({
   title,
@@ -71,9 +64,7 @@ function RecentGrantRow({ grant }: { grant: RecentGrant }) {
           {grant.user.name[0]?.toUpperCase() ?? 'U'}
         </div>
         <div>
-          <p className="font-medium text-corolla-on-surface">
-            {grant.user.name}
-          </p>
+          <p className="font-medium text-corolla-on-surface">{grant.user.name}</p>
           <p className="text-sm text-corolla-on-surface-variant">
             {grant.system.name} • {grant.tier.name}
             {grant.instance && ` • ${grant.instance.name}`}
@@ -81,18 +72,14 @@ function RecentGrantRow({ grant }: { grant: RecentGrant }) {
         </div>
       </div>
       <div className="text-right">
-        <span
-          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-            grant.status === 'active'
-              ? 'bg-green-100 text-green-700'
-              : 'bg-gray-100 text-gray-600'
-          }`}
-        >
+        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+          grant.status === 'active' 
+            ? 'bg-green-100 text-green-700' 
+            : 'bg-gray-100 text-gray-600'
+        }`}>
           {grant.status}
         </span>
-        <p className="mt-1 text-xs text-corolla-on-surface-variant">
-          {timeAgo}
-        </p>
+        <p className="mt-1 text-xs text-corolla-on-surface-variant">{timeAgo}</p>
       </div>
     </div>
   );
@@ -114,26 +101,28 @@ function getTimeAgo(date: Date): string {
 
 export default function DashboardPage() {
   // Fetch stats
-  const { data: grantsData, isLoading: grantsLoading } = useSWR<{
-    total: number;
-    data: RecentGrant[];
-  }>('/api/access-grants?limit=5&offset=0', fetcher);
-  const { data: usersData, isLoading: usersLoading } = useSWR<{
-    total: number;
-  }>('/api/users?limit=1', fetcher);
-  const { data: systemsData, isLoading: systemsLoading } = useSWR<{
-    total: number;
-  }>('/api/systems?limit=1', fetcher);
+  const { data: grantsData, isLoading: grantsLoading } = useSWR<{ total: number; data: RecentGrant[] }>(
+    '/api/access-grants?limit=5&offset=0',
+    fetcher
+  );
+  const { data: usersData, isLoading: usersLoading } = useSWR<{ total: number }>(
+    '/api/users?limit=1',
+    fetcher
+  );
+  const { data: systemsData, isLoading: systemsLoading } = useSWR<{ total: number }>(
+    '/api/systems?limit=1',
+    fetcher
+  );
 
+  // Calculate active grants (filter by status)
+  const activeGrants = grantsData?.data?.filter(g => g.status === 'active').length ?? 0;
   const totalGrants = grantsData?.total ?? 0;
   const recentGrants = grantsData?.data ?? [];
 
   // Calculate this week's grants
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  const thisWeekGrants = recentGrants.filter(
-    (g) => new Date(g.grantedAt) >= oneWeekAgo
-  ).length;
+  const thisWeekGrants = recentGrants.filter(g => new Date(g.grantedAt) >= oneWeekAgo).length;
 
   return (
     <div className="space-y-6">

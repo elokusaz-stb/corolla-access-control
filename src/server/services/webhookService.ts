@@ -54,16 +54,30 @@ export const webhookService = {
       message: formatSlackMessage(data),
     };
 
+    console.log('[Webhook] Sending to:', SLACK_WEBHOOK_URL);
+    console.log('[Webhook] Payload:', JSON.stringify(payload, null, 2));
+
     try {
-      await fetch(SLACK_WEBHOOK_URL, {
+      const response = await fetch(SLACK_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
-    } catch {
-      // Swallow webhook errors; do not block main flow
+
+      const responseText = await response.text();
+      console.log('[Webhook] Response status:', response.status);
+      console.log('[Webhook] Response body:', responseText);
+
+      if (!response.ok) {
+        console.error('[Webhook] Failed to send notification:', response.status, responseText);
+      } else {
+        console.log('[Webhook] ✅ Access grant notification sent successfully!');
+      }
+    } catch (error) {
+      // Don't throw - webhook failures shouldn't break the main flow
+      console.error('[Webhook] ❌ Error sending notification:', error);
     }
   },
 };

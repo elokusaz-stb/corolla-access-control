@@ -16,7 +16,7 @@ export function SystemRow({ system, onManage, index = 0 }: SystemRowProps) {
   const instanceCount = system._count?.instances ?? system.instances?.length ?? 0;
   
   // Owners come as { user: { id, name, email } }[] from API
-  const owners = system.owners?.map((o) => o.user) ?? [];
+  const owners = system.owners?.map(o => o.user) ?? [];
 
   return (
     <div

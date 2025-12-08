@@ -185,14 +185,15 @@ export const accessGrantsService = {
     // 8. Send webhook notification (async, don't block)
     try {
       const grantedByUser = await accessGrantsRepo.getUserById(grantedBy);
-
+      
       // Send webhook even if we can't find the granting user (use ID as fallback)
-      const grantorInfo = grantedByUser
+      const grantorInfo = grantedByUser 
         ? { name: grantedByUser.name, email: grantedByUser.email }
         : { name: 'System Admin', email: grantedBy };
-
+      
       if (grant.user && grant.system && grant.tier) {
-        void webhookService.notifyAccessGranted({
+        console.log('[Webhook] Sending access grant notification...');
+        webhookService.notifyAccessGranted({
           grantedByUser: grantorInfo,
           grantedToUser: {
             name: grant.user.name,
@@ -208,11 +209,11 @@ export const accessGrantsService = {
           instance: grant.instance ? { name: grant.instance.name } : null,
           notes: input.notes,
           grantedAt: grant.grantedAt,
-        });
+        }).catch(err => console.error('[Webhook] Failed to send:', err));
       }
     } catch (webhookError) {
-      // Don't throw - webhook errors shouldn't break the grant flow
       console.error('[Webhook] Error preparing notification:', webhookError);
+      // Don't throw - webhook errors shouldn't break the grant flow
     }
 
     return transformGrantToResponse(grant);

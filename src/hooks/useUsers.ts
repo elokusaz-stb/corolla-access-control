@@ -34,8 +34,9 @@ async function fetcher<T>(url: string): Promise<T> {
  */
 export function useUsers(options: UseUsersOptions | string = {}) {
   // Support old API: useUsers(searchString)
-  const opts: UseUsersOptions =
-    typeof options === 'string' ? { search: options } : options;
+  const opts: UseUsersOptions = typeof options === 'string' 
+    ? { search: options } 
+    : options;
 
   const { search, limit = 50, offset = 0, enabled = true } = opts;
   
@@ -52,13 +53,14 @@ export function useUsers(options: UseUsersOptions | string = {}) {
   
   const url = shouldFetch ? `/api/users?${params.toString()}` : null;
 
-  const { data, error, isLoading, mutate } = useSWR<{
-    data: User[];
-    total: number;
-  }>(url, fetcher, {
-    revalidateOnFocus: false,
-    dedupingInterval: 1000,
-  });
+  const { data, error, isLoading, mutate } = useSWR<{ data: User[]; total: number }>(
+    url,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 1000,
+    }
+  );
 
   return {
     users: data?.data ?? [],

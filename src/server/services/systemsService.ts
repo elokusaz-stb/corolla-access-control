@@ -37,8 +37,9 @@ export const systemsService = {
         updatedAt: system.updatedAt,
         ...(system.tiers && { tiers: system.tiers }),
         ...(system.instances && { instances: system.instances }),
-        ...(system.owners && {
-          owners: system.owners.map((o) => ({
+        // Include owners (mapped from join table format)
+        ...('owners' in system && system.owners && {
+          owners: system.owners.map((o: { user: { id: string; name: string; email: string } }) => ({
             user: {
               id: o.user.id,
               name: o.user.name,
@@ -46,6 +47,7 @@ export const systemsService = {
             },
           })),
         }),
+        // Include counts
         ...('_count' in system && { _count: system._count }),
       })),
       total,
