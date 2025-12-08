@@ -15,7 +15,7 @@ export default function SystemsAdminPage() {
   const [selectedSystemId, setSelectedSystemId] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const { systems, isLoading, mutate } = useSystems({
+  const { systems, isLoading } = useSystems({
     includeTiers: true,
     includeInstances: true,
   });
