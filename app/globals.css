@@ -1,0 +1,622 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================
+   COROLLA DESIGN SYSTEM - Global Styles
+   ========================================= */
+
+@layer base {
+  :root {
+    /* Corolla Design System - Primary Palette */
+    --corolla-canvas: #d3a4f1;
+    --corolla-surface: #fdf7ff;
+    --corolla-primary: #6750a4;
+    --corolla-primary-container: #eaddff;
+    --corolla-surface-variant: #f3edf7;
+    --corolla-outline: #e7e0ec;
+    --corolla-on-surface: #1d192b;
+    --corolla-on-surface-variant: #49454f;
+    --corolla-active-nav: #e8def8;
+    --corolla-quick-grant-border: #d0bcff;
+
+    /* shadcn/ui CSS variables mapped to Corolla */
+    --background: 285 100% 99%;
+    --foreground: 270 26% 14%;
+    --card: 285 100% 99%;
+    --card-foreground: 270 26% 14%;
+    --popover: 285 100% 99%;
+    --popover-foreground: 270 26% 14%;
+    --primary: 262 43% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 47% 93%;
+    --secondary-foreground: 270 26% 14%;
+    --muted: 270 27% 95%;
+    --muted-foreground: 265 9% 31%;
+    --accent: 270 47% 93%;
+    --accent-foreground: 270 26% 14%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 25% 91%;
+    --input: 270 25% 91%;
+    --ring: 262 43% 48%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply antialiased;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+
+  /* Remove default focus outline, apply custom */
+  *:focus {
+    @apply outline-none;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Selection color */
+  ::selection {
+    @apply bg-corolla-primary/20 text-corolla-on-surface;
+  }
+}
+
+/* =========================================
+   COMPONENT STYLES
+   ========================================= */
+
+@layer components {
+  /* Floating Window Container */
+  .corolla-window {
+    @apply mx-auto max-w-6xl bg-corolla-surface;
+    @apply border-8 border-white/50;
+    @apply rounded-window shadow-window;
+    @apply overflow-hidden;
+    height: 85vh;
+    min-height: 600px;
+  }
+
+  /* Sidebar */
+  .corolla-sidebar {
+    @apply w-64 bg-corolla-surface-variant;
+    @apply flex flex-col;
+  }
+
+  /* Navigation Item */
+  .corolla-nav-item {
+    @apply flex items-center gap-2.5 px-4 py-2.5;
+    @apply rounded-full;
+    @apply text-sm font-medium;
+    @apply transition-all duration-200;
+    @apply focus:ring-2 focus:ring-corolla-primary focus:ring-offset-2 focus:ring-offset-corolla-surface-variant;
+  }
+
+  .corolla-nav-item--active {
+    @apply bg-corolla-active-nav font-bold text-corolla-on-surface;
+    @apply shadow-sm;
+  }
+
+  .corolla-nav-item--inactive {
+    @apply text-corolla-on-surface-variant;
+    @apply hover:bg-white/50 hover:text-corolla-on-surface;
+  }
+
+  /* Topbar */
+  .corolla-topbar {
+    @apply flex items-center justify-between;
+    @apply px-6 py-4;
+    @apply border-b border-corolla-outline;
+    @apply bg-corolla-surface;
+  }
+
+  /* Page Title */
+  .corolla-page-title {
+    @apply text-2xl font-black tracking-tight text-corolla-on-surface;
+  }
+
+  /* Section Title */
+  .corolla-section-title {
+    @apply text-xl font-bold tracking-tight text-corolla-on-surface;
+  }
+
+  /* Section Label */
+  .corolla-label {
+    @apply text-xs font-bold uppercase tracking-wider text-corolla-on-surface-variant;
+  }
+
+  /* Card */
+  .corolla-card {
+    @apply rounded-2xl border border-corolla-outline bg-white;
+    @apply overflow-hidden;
+    @apply transition-all duration-200;
+    @apply hover:-translate-y-0.5 hover:shadow-lg;
+  }
+
+  .corolla-card--static {
+    @apply rounded-2xl border border-corolla-outline bg-white;
+    @apply overflow-hidden;
+  }
+
+  /* Quick Grant Card */
+  .corolla-quick-grant {
+    @apply bg-corolla-primary-container;
+    @apply border-2 border-corolla-quick-grant-border;
+    @apply shadow-quick-grant;
+    @apply rounded-2xl p-6;
+    @apply animate-slide-in-from-top;
+  }
+
+  /* Primary Button */
+  .corolla-btn-primary {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply bg-corolla-primary text-white;
+    @apply rounded-full px-5 py-2.5;
+    @apply text-sm font-semibold;
+    @apply shadow-lg shadow-corolla-primary/25;
+    @apply transition-all duration-200;
+    @apply hover:shadow-xl hover:shadow-corolla-primary/30 hover:brightness-110;
+    @apply active:scale-95;
+    @apply focus:ring-2 focus:ring-corolla-primary focus:ring-offset-2;
+    @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:brightness-100 disabled:active:scale-100;
+  }
+
+  /* Secondary Button */
+  .corolla-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply bg-white text-corolla-on-surface;
+    @apply rounded-full px-4 py-2;
+    @apply text-sm font-medium;
+    @apply border border-corolla-outline;
+    @apply transition-all duration-200;
+    @apply hover:border-corolla-quick-grant-border hover:bg-corolla-surface-variant hover:shadow-md;
+    @apply active:scale-95;
+    @apply focus:ring-2 focus:ring-corolla-primary focus:ring-offset-2;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Ghost Button */
+  .corolla-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply bg-transparent text-corolla-on-surface-variant;
+    @apply rounded-full px-4 py-2;
+    @apply text-sm font-medium;
+    @apply transition-all duration-200;
+    @apply hover:bg-white/50 hover:text-corolla-on-surface;
+    @apply active:scale-95;
+    @apply focus:ring-2 focus:ring-corolla-primary focus:ring-offset-2;
+  }
+
+  /* Danger Button */
+  .corolla-btn-danger {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply bg-red-500 text-white;
+    @apply rounded-full px-4 py-2;
+    @apply text-sm font-medium;
+    @apply shadow-md;
+    @apply transition-all duration-200;
+    @apply hover:bg-red-600 hover:shadow-lg;
+    @apply active:scale-95;
+    @apply focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+  }
+
+  /* Input */
+  .corolla-input {
+    @apply w-full rounded-xl border-0 bg-white p-3;
+    @apply text-corolla-on-surface;
+    @apply shadow-sm;
+    @apply transition-all duration-200;
+    @apply hover:bg-white hover:shadow-md;
+    @apply focus:shadow-md focus:ring-2 focus:ring-corolla-primary focus:ring-offset-0;
+    @apply placeholder:text-corolla-on-surface-variant/60;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Textarea */
+  .corolla-textarea {
+    @apply w-full rounded-xl border-2 border-transparent bg-white p-3;
+    @apply text-corolla-on-surface;
+    @apply resize-none shadow-sm;
+    @apply transition-all duration-200;
+    @apply hover:shadow-md;
+    @apply focus:border-corolla-quick-grant-border focus:ring-2 focus:ring-corolla-primary focus:ring-offset-0;
+    @apply placeholder:text-corolla-on-surface-variant/60;
+  }
+
+  /* Select */
+  .corolla-select {
+    @apply w-full rounded-xl border-0 bg-white p-3;
+    @apply text-corolla-on-surface;
+    @apply shadow-sm;
+    @apply transition-all duration-200;
+    @apply hover:shadow-md;
+    @apply focus:ring-2 focus:ring-corolla-primary focus:ring-offset-0;
+    @apply cursor-pointer;
+  }
+
+  /* Status Badges */
+  .corolla-badge {
+    @apply inline-flex items-center;
+    @apply rounded-full px-2.5 py-0.5;
+    @apply text-xs font-bold;
+    @apply border;
+    @apply transition-all duration-200;
+  }
+
+  .corolla-badge--active {
+    @apply border-green-200 bg-green-100 text-green-700;
+  }
+
+  .corolla-badge--removed {
+    @apply border-gray-200 bg-gray-100 text-gray-500 line-through;
+  }
+
+  .corolla-badge--pending {
+    @apply border-amber-200 bg-amber-100 text-amber-700;
+  }
+
+  .corolla-badge--info {
+    @apply border-corolla-quick-grant-border bg-corolla-primary-container text-corolla-primary;
+  }
+
+  /* Table/Grid Rows */
+  .corolla-row {
+    @apply transition-all duration-200;
+    @apply hover:bg-corolla-surface-variant;
+  }
+
+  .corolla-row--clickable {
+    @apply cursor-pointer;
+    @apply hover:-translate-y-0.5 hover:bg-corolla-surface-variant hover:shadow-md;
+    @apply active:scale-[0.99];
+  }
+
+  /* Avatar */
+  .corolla-avatar {
+    @apply overflow-hidden rounded-full;
+    @apply bg-corolla-primary-container;
+    @apply flex items-center justify-center;
+    @apply font-bold text-corolla-primary;
+    @apply transition-transform duration-200;
+    @apply hover:scale-105;
+  }
+
+  /* Dropdown / Popover */
+  .corolla-dropdown {
+    @apply rounded-xl bg-white;
+    @apply border border-corolla-outline;
+    @apply shadow-xl;
+    @apply overflow-hidden;
+    @apply duration-200 animate-in fade-in slide-in-from-top-2;
+  }
+
+  .corolla-dropdown-item {
+    @apply w-full px-4 py-3;
+    @apply text-left text-sm text-corolla-on-surface;
+    @apply transition-colors duration-150;
+    @apply hover:bg-corolla-surface-variant;
+    @apply focus:bg-corolla-active-nav focus:outline-none;
+  }
+
+  .corolla-dropdown-item--active {
+    @apply bg-corolla-active-nav font-medium;
+  }
+
+  /* Toast */
+  .corolla-toast {
+    @apply bg-corolla-primary text-white;
+    @apply rounded-xl px-4 py-3;
+    @apply shadow-xl;
+    @apply duration-300 animate-in fade-in slide-in-from-bottom-4;
+  }
+
+  .corolla-toast--success {
+    @apply bg-green-600 text-white;
+  }
+
+  .corolla-toast--error {
+    @apply bg-red-500 text-white;
+  }
+
+  /* Skeleton Loader */
+  .corolla-skeleton {
+    @apply rounded-xl bg-corolla-surface-variant;
+    @apply animate-pulse;
+  }
+
+  /* Chip */
+  .corolla-chip {
+    @apply inline-flex items-center gap-2;
+    @apply rounded-xl bg-white;
+    @apply border border-corolla-outline;
+    @apply px-4 py-2.5;
+    @apply text-sm font-medium text-corolla-on-surface;
+    @apply shadow-sm;
+    @apply transition-all duration-200;
+    @apply hover:bg-corolla-surface-variant hover:shadow-md;
+  }
+
+  /* Owner Pill */
+  .corolla-owner-pill {
+    @apply inline-flex items-center gap-3;
+    @apply rounded-full bg-corolla-primary-container;
+    @apply border border-corolla-quick-grant-border;
+    @apply py-1 pl-1 pr-4;
+    @apply transition-all duration-200;
+    @apply hover:bg-corolla-active-nav hover:shadow-md;
+  }
+
+  /* Drawer/Modal Backdrop */
+  .corolla-backdrop {
+    @apply fixed inset-0 z-40;
+    @apply bg-corolla-on-surface/20 backdrop-blur-sm;
+    @apply duration-200 animate-in fade-in;
+  }
+
+  /* Drawer */
+  .corolla-drawer {
+    @apply fixed inset-y-0 right-0 z-50;
+    @apply w-full max-w-xl;
+    @apply bg-corolla-surface;
+    @apply border-l-4 border-white/50;
+    @apply shadow-2xl;
+    @apply flex flex-col;
+    @apply duration-300 animate-in slide-in-from-right;
+  }
+
+  /* Modal */
+  .corolla-modal {
+    @apply w-full max-w-lg;
+    @apply bg-corolla-surface;
+    @apply rounded-[2rem];
+    @apply border-4 border-white/50;
+    @apply shadow-2xl;
+    @apply overflow-hidden;
+    @apply duration-300 animate-in fade-in zoom-in-95;
+  }
+
+  /* Tab Button */
+  .corolla-tab {
+    @apply rounded-full px-4 py-2;
+    @apply text-sm font-medium;
+    @apply transition-all duration-200;
+    @apply focus:ring-2 focus:ring-corolla-primary focus:ring-offset-2;
+  }
+
+  .corolla-tab--active {
+    @apply bg-corolla-primary text-white shadow-md;
+  }
+
+  .corolla-tab--inactive {
+    @apply text-corolla-on-surface-variant;
+    @apply hover:bg-white/50 hover:text-corolla-on-surface;
+  }
+
+  /* Error Row */
+  .corolla-row--error {
+    @apply border-l-4 border-red-400 bg-red-50;
+    @apply text-red-700;
+  }
+
+  /* Success Row */
+  .corolla-row--success {
+    @apply border-l-4 border-green-400 bg-green-50;
+  }
+
+  /* Icon Button */
+  .corolla-icon-btn {
+    @apply inline-flex items-center justify-center;
+    @apply h-10 w-10 rounded-full;
+    @apply text-corolla-on-surface-variant;
+    @apply transition-all duration-200;
+    @apply hover:bg-corolla-surface-variant hover:text-corolla-on-surface;
+    @apply active:scale-95;
+    @apply focus:ring-2 focus:ring-corolla-primary focus:ring-offset-2;
+  }
+
+  /* Form Field Group */
+  .corolla-field {
+    @apply space-y-2;
+  }
+
+  .corolla-field-label {
+    @apply block text-xs font-bold uppercase tracking-wider text-corolla-on-surface-variant;
+  }
+
+  .corolla-field-error {
+    @apply mt-1 text-xs text-red-600;
+  }
+
+  .corolla-field-hint {
+    @apply mt-1 text-xs text-corolla-on-surface-variant;
+  }
+
+  /* Inline Form */
+  .corolla-inline-form {
+    @apply rounded-2xl p-4;
+    @apply bg-corolla-primary-container/50;
+    @apply border-2 border-corolla-quick-grant-border;
+    @apply duration-200 animate-in slide-in-from-top-2;
+  }
+
+  /* Empty State */
+  .corolla-empty-state {
+    @apply flex flex-col items-center justify-center py-16 text-center;
+  }
+
+  .corolla-empty-state-icon {
+    @apply flex h-16 w-16 items-center justify-center rounded-2xl;
+    @apply bg-corolla-surface-variant;
+    @apply text-corolla-on-surface-variant;
+  }
+
+  /* List Container */
+  .corolla-list {
+    @apply rounded-[2rem] bg-corolla-surface;
+    @apply border border-corolla-outline;
+    @apply shadow-lg;
+    @apply overflow-hidden;
+  }
+
+  /* List Header */
+  .corolla-list-header {
+    @apply grid gap-x-3 bg-corolla-surface-variant px-4 py-3;
+    @apply text-xs font-bold uppercase tracking-wider text-corolla-on-surface-variant;
+  }
+}
+
+/* =========================================
+   UTILITY CLASSES
+   ========================================= */
+
+@layer utilities {
+  /* Responsive utilities for mobile sidebar */
+  @media (max-width: 1024px) {
+    .corolla-window {
+      @apply rounded-none border-0;
+      height: 100vh;
+      min-height: 100vh;
+    }
+  }
+
+  /* Focus visible only for keyboard navigation */
+  .focus-visible-only:focus:not(:focus-visible) {
+    @apply ring-0;
+  }
+
+  /* Stagger animation delays */
+  .stagger-1 {
+    animation-delay: 50ms;
+  }
+  .stagger-2 {
+    animation-delay: 100ms;
+  }
+  .stagger-3 {
+    animation-delay: 150ms;
+  }
+  .stagger-4 {
+    animation-delay: 200ms;
+  }
+  .stagger-5 {
+    animation-delay: 250ms;
+  }
+
+  /* Smooth height transition */
+  .animate-height {
+    transition:
+      height 0.3s ease-out,
+      opacity 0.3s ease-out;
+  }
+
+  /* Text truncate with ellipsis */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Scrollbar styling */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--corolla-outline) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--corolla-outline);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: var(--corolla-on-surface-variant);
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* =========================================
+   ANIMATION KEYFRAMES
+   ========================================= */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes checkmark {
+  0% {
+    stroke-dashoffset: 50;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes fade-remove {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Shimmer effect for skeletons */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--corolla-surface-variant) 25%,
+    var(--corolla-outline) 50%,
+    var(--corolla-surface-variant) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Checkmark animation */
+.animate-checkmark {
+  animation: checkmark 0.5s ease-out forwards;
+}
+
+/* Fade out animation for removed items */
+.animate-fade-remove {
+  animation: fade-remove 0.3s ease-out forwards;
+}

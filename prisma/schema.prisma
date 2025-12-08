@@ -1,0 +1,147 @@
+// ===========================================
+// Corolla Access Control - Prisma Schema
+// ===========================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ===========================================
+// ENUMS
+// ===========================================
+
+enum GrantStatus {
+  active
+  removed
+
+  @@map("ai_bootcamp_grant_status")
+}
+
+// ===========================================
+// MODELS
+// ===========================================
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  managerId String?  @map("manager_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Self-relation for manager hierarchy
+  manager     User?  @relation("ManagerRelation", fields: [managerId], references: [id], onDelete: SetNull)
+  teamMembers User[] @relation("ManagerRelation")
+
+  // Access grants for this user
+  grants AccessGrant[]
+
+  // Systems this user owns
+  ownedSystems SystemOwner[]
+
+  @@index([email], map: "idx_ai_bootcamp_user_email")
+  @@index([managerId], map: "idx_ai_bootcamp_user_manager_id")
+  @@map("ai_bootcamp_user")
+}
+
+model System {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Related entities
+  tiers     AccessTier[]
+  instances Instance[]
+  owners    SystemOwner[]
+  grants    AccessGrant[]
+
+  @@index([name], map: "idx_ai_bootcamp_system_name")
+  @@map("ai_bootcamp_system")
+}
+
+model Instance {
+  id        String   @id @default(cuid())
+  name      String
+  systemId  String   @map("system_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relation to parent system
+  system System @relation(fields: [systemId], references: [id], onDelete: Cascade)
+
+  // Access grants for this instance
+  grants AccessGrant[]
+
+  @@unique([systemId, name])
+  @@index([systemId], map: "idx_ai_bootcamp_instance_system_id")
+  @@map("ai_bootcamp_instance")
+}
+
+model AccessTier {
+  id        String   @id @default(cuid())
+  name      String
+  systemId  String   @map("system_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relation to parent system
+  system System @relation(fields: [systemId], references: [id], onDelete: Cascade)
+
+  // Access grants using this tier
+  grants AccessGrant[]
+
+  @@unique([systemId, name])
+  @@index([systemId], map: "idx_ai_bootcamp_access_tier_system_id")
+  @@map("ai_bootcamp_access_tier")
+}
+
+model SystemOwner {
+  systemId  String   @map("system_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  system System @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([systemId, userId])
+  @@map("ai_bootcamp_system_owner")
+}
+
+model AccessGrant {
+  id         String      @id @default(cuid())
+  userId     String      @map("user_id")
+  systemId   String      @map("system_id")
+  instanceId String?     @map("instance_id")
+  tierId     String      @map("tier_id")
+  status     GrantStatus @default(active)
+  grantedBy  String      @map("granted_by")
+  grantedAt  DateTime    @default(now()) @map("granted_at") @db.Timestamptz(6)
+  removedAt  DateTime?   @map("removed_at") @db.Timestamptz(6)
+  notes      String?
+  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  system   System      @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  instance Instance?   @relation(fields: [instanceId], references: [id], onDelete: SetNull)
+  tier     AccessTier  @relation(fields: [tierId], references: [id], onDelete: Restrict)
+
+  @@index([userId], map: "idx_ai_bootcamp_access_grant_user_id")
+  @@index([systemId], map: "idx_ai_bootcamp_access_grant_system_id")
+  @@index([instanceId], map: "idx_ai_bootcamp_access_grant_instance_id")
+  @@index([tierId], map: "idx_ai_bootcamp_access_grant_tier_id")
+  @@index([status], map: "idx_ai_bootcamp_access_grant_status")
+  @@index([grantedAt], map: "idx_ai_bootcamp_access_grant_granted_at")
+  @@index([userId, systemId, status], map: "idx_ai_bootcamp_access_grant_user_system_status")
+  @@map("ai_bootcamp_access_grant")
+}

@@ -1,0 +1,7 @@
+user_email,system_name,instance_name,access_tier_name,notes
+john@example.com,GitHub,Production,Admin,Valid row
+unknown@example.com,GitHub,Production,Viewer,Unknown user
+jane@example.com,UnknownSystem,,Admin,Unknown system
+john@example.com,GitHub,Production,UnknownTier,Unknown tier
+jane@example.com,GitHub,WrongInstance,Viewer,Instance doesn't belong
+
