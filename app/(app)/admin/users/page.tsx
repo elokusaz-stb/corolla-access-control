@@ -1,7 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Search, ChevronRight, Shield, Mail, Loader2, Users } from 'lucide-react';
+import {
+  Plus,
+  Search,
+  ChevronRight,
+  Shield,
+  Mail,
+  Loader2,
+  Users,
+} from 'lucide-react';
 import { useUsers } from '@/hooks/useUsers';
 import { useDebounce } from '@/hooks/useDebounce';
 import { cn } from '@/lib/utils';
@@ -35,14 +43,13 @@ function UserCard({ user }: { user: User }) {
           {grantCount} active grant{grantCount !== 1 ? 's' : ''}
         </div>
       </div>
-      <button 
+      <button
         className={cn(
-          "corolla-btn-secondary",
-          "opacity-0 transition-opacity group-hover:opacity-100"
+          'corolla-btn-secondary',
+          'opacity-0 transition-opacity group-hover:opacity-100'
         )}
         onClick={() => {
-          // TODO: Open user detail drawer/modal
-          console.log('View user:', user.id);
+          /* TODO: Open user detail drawer/modal */
         }}
       >
         View
@@ -128,11 +135,9 @@ export default function UsersAdminPage() {
             </div>
           ) : users.length === 0 ? (
             <EmptyState />
-          ) : (
-            users.map((user) => (
-              <UserCard key={user.id} user={user} />
-            ))
-          )}
+      ) : (
+          users.map((user) => <UserCard key={user.id} user={user} />)
+        )}
         </div>
       </div>
 
