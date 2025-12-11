@@ -105,3 +105,4 @@ describe('CorollaAppShell', () => {
     expect(window).toBeInTheDocument();
   });
 });
+

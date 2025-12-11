@@ -56,3 +56,4 @@ test.describe('Page Structure', () => {
     await expect(submitButton).toHaveAttribute('type', 'submit');
   });
 });
+

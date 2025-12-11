@@ -137,3 +137,4 @@ SELECT 'Instances: ' || COUNT(*)::text FROM ai_bootcamp_instance;
 SELECT 'Owners: ' || COUNT(*)::text FROM ai_bootcamp_system_owner;
 SELECT 'Grants: ' || COUNT(*)::text FROM ai_bootcamp_access_grant;
 
+

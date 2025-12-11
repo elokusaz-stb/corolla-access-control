@@ -115,3 +115,4 @@ export function Sidebar({ user, onLogout, className }: SidebarProps) {
     </aside>
   );
 }
+

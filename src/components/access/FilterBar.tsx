@@ -393,3 +393,4 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
     </div>
   );
 }
+

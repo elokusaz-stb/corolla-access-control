@@ -47,3 +47,4 @@ describe('Button component', () => {
     expect(screen.getByRole('button')).toHaveClass('custom-class');
   });
 });
+

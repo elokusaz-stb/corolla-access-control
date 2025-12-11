@@ -33,3 +33,4 @@ describe('StatusBadge', () => {
     expect(badge).toHaveClass('corolla-badge');
   });
 });
+

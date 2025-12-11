@@ -24,3 +24,4 @@ vi.mock('@/lib/supabase/client', () => ({
     },
   })),
 }));
+

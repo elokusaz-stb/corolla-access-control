@@ -59,3 +59,4 @@ describe('Topbar', () => {
     ).not.toBeInTheDocument();
   });
 });
+

@@ -77,3 +77,4 @@ describe('NavLinkItem', () => {
     expect(screen.getByText('Settings')).toBeInTheDocument();
   });
 });
+

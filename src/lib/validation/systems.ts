@@ -172,3 +172,4 @@ export const OwnerResponseSchema = z.object({
 });
 
 export type OwnerResponse = z.infer<typeof OwnerResponseSchema>;
+

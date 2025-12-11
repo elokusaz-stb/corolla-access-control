@@ -84,3 +84,4 @@ describe('CorollaSidebar', () => {
     expect(systemsLink).toHaveClass('corolla-nav-item--inactive');
   });
 });
+

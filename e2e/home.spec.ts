@@ -68,3 +68,4 @@ test.describe('API Health Check', () => {
     expect(data.timestamp).toBeDefined();
   });
 });
+

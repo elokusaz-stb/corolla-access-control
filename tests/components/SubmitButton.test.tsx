@@ -48,3 +48,4 @@ describe('SubmitButton', () => {
     expect(button).toHaveClass('rounded-full');
   });
 });
+

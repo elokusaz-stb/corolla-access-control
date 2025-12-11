@@ -477,3 +477,4 @@ INSERT INTO ai_bootcamp_instance (id, name, system_id) VALUES
 -- MIGRATION COMPLETE
 -- ===========================================
 
+

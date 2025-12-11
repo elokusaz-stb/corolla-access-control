@@ -99,3 +99,4 @@ FROM ai_bootcamp_instance i
 JOIN ai_bootcamp_system s ON i.system_id = s.id 
 ORDER BY s.name, i.name;
 
+

@@ -93,3 +93,4 @@ describe('SystemRow', () => {
     expect(onManage).toHaveBeenCalledWith('system-1');
   });
 });
+

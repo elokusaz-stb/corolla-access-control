@@ -16,3 +16,4 @@ export function NavSection({ title, children, className }: NavSectionProps) {
     </div>
   );
 }
+

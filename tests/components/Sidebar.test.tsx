@@ -94,3 +94,4 @@ describe('Sidebar', () => {
     expect(screen.queryByText('john@example.com')).not.toBeInTheDocument();
   });
 });
+

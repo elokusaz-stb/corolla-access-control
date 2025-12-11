@@ -101,3 +101,4 @@ describe('FileUploadCard', () => {
     expect(onFileSelect).not.toHaveBeenCalled();
   });
 });
+

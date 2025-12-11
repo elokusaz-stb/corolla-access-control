@@ -13,11 +13,25 @@ datasource db {
 }
 
 // ===========================================
+// ===========================================
 // ENUMS
 // ===========================================
 
+enum RequestStatus {
+  requested
+  manager_approved
+  owner_approved
+  rejected
+  completed
+
+  @@map("ai_bootcamp_request_status")
+}
+
 enum GrantStatus {
+  requested
+  approved
   active
+  to_remove
   removed
 
   @@map("ai_bootcamp_grant_status")
@@ -38,6 +52,10 @@ model User {
   // Self-relation for manager hierarchy
   manager     User?  @relation("ManagerRelation", fields: [managerId], references: [id], onDelete: SetNull)
   teamMembers User[] @relation("ManagerRelation")
+
+  // Access requests related to this user
+  accessRequests  AccessRequest[] @relation("RequestUser")
+  createdRequests AccessRequest[] @relation("Requester")
 
   // Access grants for this user
   grants AccessGrant[]
@@ -62,6 +80,7 @@ model System {
   instances Instance[]
   owners    SystemOwner[]
   grants    AccessGrant[]
+  requests  AccessRequest[]
 
   @@index([name], map: "idx_ai_bootcamp_system_name")
   @@map("ai_bootcamp_system")
@@ -78,7 +97,8 @@ model Instance {
   system System @relation(fields: [systemId], references: [id], onDelete: Cascade)
 
   // Access grants for this instance
-  grants AccessGrant[]
+  grants   AccessGrant[]
+  requests AccessRequest[]
 
   @@unique([systemId, name])
   @@index([systemId], map: "idx_ai_bootcamp_instance_system_id")
@@ -96,7 +116,8 @@ model AccessTier {
   system System @relation(fields: [systemId], references: [id], onDelete: Cascade)
 
   // Access grants using this tier
-  grants AccessGrant[]
+  grants   AccessGrant[]
+  requests AccessRequest[]
 
   @@unique([systemId, name])
   @@index([systemId], map: "idx_ai_bootcamp_access_tier_system_id")
@@ -117,18 +138,21 @@ model SystemOwner {
 }
 
 model AccessGrant {
-  id         String      @id @default(cuid())
-  userId     String      @map("user_id")
-  systemId   String      @map("system_id")
-  instanceId String?     @map("instance_id")
-  tierId     String      @map("tier_id")
-  status     GrantStatus @default(active)
-  grantedBy  String      @map("granted_by")
-  grantedAt  DateTime    @default(now()) @map("granted_at") @db.Timestamptz(6)
-  removedAt  DateTime?   @map("removed_at") @db.Timestamptz(6)
-  notes      String?
-  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt  DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id          String      @id @default(cuid())
+  userId      String      @map("user_id")
+  systemId    String      @map("system_id")
+  instanceId  String?     @map("instance_id")
+  tierId      String      @map("tier_id")
+  status      GrantStatus @default(active)
+  grantedBy   String      @map("granted_by")
+  grantedAt   DateTime    @default(now()) @map("granted_at") @db.Timestamptz(6)
+  removedAt   DateTime?   @map("removed_at") @db.Timestamptz(6)
+  approvedBy  String?     @map("approved_by")
+  approvedAt  DateTime?   @map("approved_at") @db.Timestamptz(6)
+  requestedAt DateTime?   @map("requested_at") @db.Timestamptz(6)
+  notes       String?
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   // Relations
   user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -144,4 +168,30 @@ model AccessGrant {
   @@index([grantedAt], map: "idx_ai_bootcamp_access_grant_granted_at")
   @@index([userId, systemId, status], map: "idx_ai_bootcamp_access_grant_user_system_status")
   @@map("ai_bootcamp_access_grant")
+}
+
+model AccessRequest {
+  id           String        @id @default(cuid())
+  userId       String        @map("user_id")
+  requestedBy  String        @map("requested_by")
+  systemId     String        @map("system_id")
+  instanceId   String?       @map("instance_id")
+  tierId       String        @map("tier_id")
+  status       RequestStatus
+  reason       String?
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  user      User       @relation("RequestUser", fields: [userId], references: [id], onDelete: Cascade)
+  requester User       @relation("Requester", fields: [requestedBy], references: [id], onDelete: Cascade)
+  system    System     @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  instance  Instance?  @relation(fields: [instanceId], references: [id], onDelete: SetNull)
+  tier      AccessTier @relation(fields: [tierId], references: [id], onDelete: Restrict)
+
+  @@index([userId], map: "idx_ai_bootcamp_access_request_user_id")
+  @@index([requestedBy], map: "idx_ai_bootcamp_access_request_requested_by")
+  @@index([systemId], map: "idx_ai_bootcamp_access_request_system_id")
+  @@index([status], map: "idx_ai_bootcamp_access_request_status")
+  @@map("ai_bootcamp_access_request")
 }

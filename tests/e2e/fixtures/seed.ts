@@ -1,4 +1,4 @@
-import { PrismaClient, GrantStatus } from '@prisma/client';
+import { PrismaClient, GrantStatus, RequestStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -11,6 +11,7 @@ const prisma = new PrismaClient();
  * - Systems with tiers and instances
  * - System owners
  * - Sample access grants
+ * - Sample access requests
  */
 
 // Test User IDs (fixed for consistent test references)
@@ -147,10 +148,48 @@ export const TEST_GRANTS = {
   },
 };
 
+// Test Access Request IDs
+export const TEST_REQUESTS = {
+  pendingRequest: {
+    id: 'test-request-pending',
+    userId: TEST_USERS.regular.id,
+    requestedBy: TEST_USERS.regular.id,
+    systemId: TEST_SYSTEMS.sap.id,
+    instanceId: null,
+    tierId: TEST_TIERS.sapViewer.id,
+    status: 'requested' as RequestStatus,
+    reason: 'Need access for audit project',
+  },
+  managerApprovedRequest: {
+    id: 'test-request-manager-approved',
+    userId: TEST_USERS.newHire.id,
+    requestedBy: TEST_USERS.newHire.id,
+    systemId: TEST_SYSTEMS.salesforce.id,
+    instanceId: TEST_INSTANCES.salesforceStaging.id,
+    tierId: TEST_TIERS.salesforceUser.id,
+    status: 'manager_approved' as RequestStatus,
+    reason: 'Onboarding training',
+  },
+  rejectedRequest: {
+    id: 'test-request-rejected',
+    userId: TEST_USERS.regular.id,
+    requestedBy: TEST_USERS.regular.id,
+    systemId: TEST_SYSTEMS.magento.id,
+    instanceId: null,
+    tierId: TEST_TIERS.magentoAdmin.id,
+    status: 'rejected' as RequestStatus,
+    reason: 'I want admin access please',
+  },
+};
+
 async function cleanDatabase() {
   console.log('🧹 Cleaning test data...');
 
   // Delete in order to respect foreign key constraints
+  await prisma.accessRequest.deleteMany({
+    where: { id: { startsWith: 'test-' } },
+  });
+
   await prisma.accessGrant.deleteMany({
     where: { id: { startsWith: 'test-' } },
   });
@@ -319,6 +358,9 @@ async function seedAccessGrants() {
       status: TEST_GRANTS.activeGrant1.status,
       grantedBy: TEST_USERS.admin.id,
       grantedAt: new Date(),
+      requestedAt: new Date(Date.now() - 3600000), // 1 hour ago
+      approvedBy: TEST_USERS.admin.id,
+      approvedAt: new Date(),
       notes: 'Initial access for testing',
     },
   });
@@ -334,6 +376,9 @@ async function seedAccessGrants() {
       status: TEST_GRANTS.activeGrant2.status,
       grantedBy: TEST_USERS.manager.id,
       grantedAt: new Date(),
+      requestedAt: new Date(Date.now() - 7200000), // 2 hours ago
+      approvedBy: TEST_USERS.manager.id,
+      approvedAt: new Date(),
       notes: 'CRM access for sales team',
     },
   });
@@ -350,11 +395,62 @@ async function seedAccessGrants() {
       grantedBy: TEST_USERS.admin.id,
       grantedAt: new Date(Date.now() - 86400000), // 1 day ago
       removedAt: new Date(),
+      requestedAt: new Date(Date.now() - 90000000),
+      approvedBy: TEST_USERS.admin.id,
+      approvedAt: new Date(Date.now() - 86400000),
       notes: 'Access revoked - project completed',
     },
   });
 
   console.log('✅ Access grants seeded');
+}
+
+async function seedAccessRequests() {
+  console.log('📝 Seeding access requests...');
+
+  // Pending request
+  await prisma.accessRequest.create({
+    data: {
+      id: TEST_REQUESTS.pendingRequest.id,
+      userId: TEST_REQUESTS.pendingRequest.userId,
+      requestedBy: TEST_REQUESTS.pendingRequest.requestedBy,
+      systemId: TEST_REQUESTS.pendingRequest.systemId,
+      instanceId: TEST_REQUESTS.pendingRequest.instanceId,
+      tierId: TEST_REQUESTS.pendingRequest.tierId,
+      status: TEST_REQUESTS.pendingRequest.status,
+      reason: TEST_REQUESTS.pendingRequest.reason,
+    },
+  });
+
+  // Manager approved request
+  await prisma.accessRequest.create({
+    data: {
+      id: TEST_REQUESTS.managerApprovedRequest.id,
+      userId: TEST_REQUESTS.managerApprovedRequest.userId,
+      requestedBy: TEST_REQUESTS.managerApprovedRequest.requestedBy,
+      systemId: TEST_REQUESTS.managerApprovedRequest.systemId,
+      instanceId: TEST_REQUESTS.managerApprovedRequest.instanceId,
+      tierId: TEST_REQUESTS.managerApprovedRequest.tierId,
+      status: TEST_REQUESTS.managerApprovedRequest.status,
+      reason: TEST_REQUESTS.managerApprovedRequest.reason,
+    },
+  });
+
+  // Rejected request
+  await prisma.accessRequest.create({
+    data: {
+      id: TEST_REQUESTS.rejectedRequest.id,
+      userId: TEST_REQUESTS.rejectedRequest.userId,
+      requestedBy: TEST_REQUESTS.rejectedRequest.requestedBy,
+      systemId: TEST_REQUESTS.rejectedRequest.systemId,
+      instanceId: TEST_REQUESTS.rejectedRequest.instanceId,
+      tierId: TEST_REQUESTS.rejectedRequest.tierId,
+      status: TEST_REQUESTS.rejectedRequest.status,
+      reason: TEST_REQUESTS.rejectedRequest.reason,
+    },
+  });
+
+  console.log('✅ Access requests seeded');
 }
 
 export async function seed() {
@@ -368,6 +464,7 @@ export async function seed() {
     await seedInstances();
     await seedSystemOwners();
     await seedAccessGrants();
+    await seedAccessRequests();
 
     console.log('\n✨ E2E test database seeded successfully!');
     console.log('\n📊 Seed Summary:');
@@ -376,6 +473,7 @@ export async function seed() {
     console.log(`   - ${Object.keys(TEST_TIERS).length} access tiers`);
     console.log(`   - ${Object.keys(TEST_INSTANCES).length} instances`);
     console.log(`   - ${Object.keys(TEST_GRANTS).length} access grants`);
+    console.log(`   - ${Object.keys(TEST_REQUESTS).length} access requests`);
   } catch (error) {
     console.error('❌ Error seeding database:', error);
     throw error;
@@ -393,3 +491,4 @@ if (require.main === module) {
       process.exit(1);
     });
 }
+

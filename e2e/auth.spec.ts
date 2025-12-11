@@ -118,3 +118,4 @@ test.describe('Authentication Callback', () => {
     await expect(page).toHaveURL(/\/login/);
   });
 });
+

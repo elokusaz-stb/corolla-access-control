@@ -92,3 +92,4 @@ SELECT 'Owners:', COUNT(*) FROM ai_bootcamp_system_owner
 UNION ALL
 SELECT 'Grants:', COUNT(*) FROM ai_bootcamp_access_grant;
 
+

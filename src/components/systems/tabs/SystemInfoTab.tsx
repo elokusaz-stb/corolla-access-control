@@ -147,3 +147,4 @@ export function SystemInfoTab({ system, onUpdate }: SystemInfoTabProps) {
     </form>
   );
 }
+
